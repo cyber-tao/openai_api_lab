@@ -2,7 +2,9 @@ import React, { useEffect } from 'react';
 import { ConfigProvider, theme, App as AntApp } from 'antd';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Layout } from './components/common/Layout';
+import { ErrorBoundary } from './components/common/ErrorBoundary';
 import { ChatPage, ConfigPage, TestingPage, StatisticsPage } from './pages';
+import DebugDashboard from './components/debug/DebugDashboard';
 import { useSettingsStore } from './stores/settingsStore';
 import './App.css';
 
@@ -39,46 +41,49 @@ const App: React.FC = () => {
   };
 
   return (
-    <ConfigProvider
-      theme={{
-        algorithm: getThemeAlgorithm(),
-        token: themeTokens,
-        components: {
-          Layout: {
-            bodyBg: themeTokens.colorBgBase,
-            headerBg: themeTokens.colorBgContainer,
-            siderBg: themeTokens.colorBgContainer,
+    <ErrorBoundary>
+      <ConfigProvider
+        theme={{
+          algorithm: getThemeAlgorithm(),
+          token: themeTokens,
+          components: {
+            Layout: {
+              bodyBg: themeTokens.colorBgBase,
+              headerBg: themeTokens.colorBgContainer,
+              siderBg: themeTokens.colorBgContainer,
+            },
+            Menu: {
+              darkItemBg: themeTokens.colorBgContainer,
+              darkItemSelectedBg: themeTokens.colorPrimary,
+              darkItemHoverBg: themeTokens.colorBgElevated,
+              itemBg: themeTokens.colorBgContainer,
+              itemSelectedBg: themeTokens.colorPrimary,
+              itemHoverBg: themeTokens.colorBgElevated,
+            },
+            Button: {
+              primaryShadow: 'none',
+            },
+            Card: {
+              colorBgContainer: themeTokens.colorBgContainer,
+            },
           },
-          Menu: {
-            darkItemBg: themeTokens.colorBgContainer,
-            darkItemSelectedBg: themeTokens.colorPrimary,
-            darkItemHoverBg: themeTokens.colorBgElevated,
-            itemBg: themeTokens.colorBgContainer,
-            itemSelectedBg: themeTokens.colorPrimary,
-            itemHoverBg: themeTokens.colorBgElevated,
-          },
-          Button: {
-            primaryShadow: 'none',
-          },
-          Card: {
-            colorBgContainer: themeTokens.colorBgContainer,
-          },
-        },
-      }}
-    >
-      <AntApp>
-        <Router>
-          <Layout>
-            <Routes>
-              <Route path="/" element={<ChatPage />} />
-              <Route path="/config" element={<ConfigPage />} />
-              <Route path="/testing" element={<TestingPage />} />
-              <Route path="/statistics" element={<StatisticsPage />} />
-            </Routes>
-          </Layout>
-        </Router>
-      </AntApp>
-    </ConfigProvider>
+        }}
+      >
+        <AntApp>
+          <Router>
+            <Layout>
+              <Routes>
+                <Route path="/" element={<ChatPage />} />
+                <Route path="/config" element={<ConfigPage />} />
+                <Route path="/testing" element={<TestingPage />} />
+                <Route path="/statistics" element={<StatisticsPage />} />
+                <Route path="/debug" element={<DebugDashboard />} />
+              </Routes>
+            </Layout>
+          </Router>
+        </AntApp>
+      </ConfigProvider>
+    </ErrorBoundary>
   );
 };
 

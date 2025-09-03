@@ -83,6 +83,15 @@ export const useConfigStore = create<ConfigState>()(
       const config: APIConfig = {
         ...configData,
         id: `config_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+        parameters: {
+          temperature: 0.7,
+          maxTokens: 1000,
+          topP: 1,
+          frequencyPenalty: 0,
+          presencePenalty: 0,
+          stream: true,
+          ...configData.parameters,
+        },
         createdAt: Date.now(),
         updatedAt: Date.now(),
       };
@@ -231,10 +240,24 @@ export const useConfigStore = create<ConfigState>()(
     loadFromStorage: () => {
       try {
         // Load configurations
-        const configs = storageService.get<APIConfig[]>(STORAGE_KEYS.API_CONFIGS, {
+        const rawConfigs = storageService.get<APIConfig[]>(STORAGE_KEYS.API_CONFIGS, {
           type: 'array',
           items: API_CONFIG_SCHEMA,
         }) || [];
+
+        // Migrate configs to ensure parameters are always present
+        const configs = rawConfigs.map(config => ({
+          ...config,
+          parameters: {
+            temperature: 0.7,
+            maxTokens: 1000,
+            topP: 1,
+            frequencyPenalty: 0,
+            presencePenalty: 0,
+            stream: true,
+            ...config.parameters,
+          }
+        }));
 
         // Load model prices
         const modelPrices = storageService.get<Record<string, ModelPrice>>(
@@ -261,20 +284,60 @@ export const useConfigStore = create<ConfigState>()(
       try {
         const { configs, activeConfigId } = get();
         
+        // Validate configs before saving
+        const validConfigs = configs.filter(config => {
+          try {
+            // Basic validation to prevent corrupted data
+            return config && 
+                   typeof config.id === 'string' && 
+                   typeof config.name === 'string' && 
+                   typeof config.endpoint === 'string' && 
+                   typeof config.apiKey === 'string' &&
+                   typeof config.parameters === 'object' &&
+                   config.parameters !== null;
+          } catch {
+            return false;
+          }
+        }).map(config => {
+          // Ensure parameters object has default values
+          return {
+            ...config,
+            parameters: {
+              temperature: 0.7,
+              maxTokens: 1000,
+              topP: 1,
+              frequencyPenalty: 0,
+              presencePenalty: 0,
+              stream: true,
+              ...config.parameters,
+            }
+          };
+        });
+
         // Save configurations
-        storageService.set(STORAGE_KEYS.API_CONFIGS, configs, {
+        const saveSuccess = storageService.set(STORAGE_KEYS.API_CONFIGS, validConfigs, {
           type: 'array',
           items: API_CONFIG_SCHEMA,
         });
+
+        if (!saveSuccess) {
+          throw new Error('Failed to save configurations to storage');
+        }
 
         // Save active config ID to settings
         const settings = storageService.get(STORAGE_KEYS.APP_SETTINGS) || {};
         settings.activeConfigId = activeConfigId;
         settings.lastUpdated = Date.now();
-        storageService.set(STORAGE_KEYS.APP_SETTINGS, settings);
+        
+        const settingsSaveSuccess = storageService.set(STORAGE_KEYS.APP_SETTINGS, settings);
+        if (!settingsSaveSuccess) {
+          console.warn('Failed to save settings, but configurations were saved');
+        }
       } catch (error) {
         console.error('Failed to save config data to storage:', error);
-        get().setError('configs', 'Failed to save configurations');
+        get().setError('configs', `Failed to save configurations: ${error instanceof Error ? error.message : 'Unknown error'}`);
+        
+        // Don't throw the error to prevent app crash
       }
     },
 
@@ -327,13 +390,18 @@ export const useConfigStore = create<ConfigState>()(
   }))
 );
 
-// Auto-save subscription
+// Auto-save subscription with error handling
 useConfigStore.subscribe(
   (state) => ({ configs: state.configs, activeConfigId: state.activeConfigId }),
   () => {
-    // Debounced auto-save
+    // Debounced auto-save with error handling
     const timeoutId = setTimeout(() => {
-      useConfigStore.getState().saveToStorage();
+      try {
+        useConfigStore.getState().saveToStorage();
+      } catch (error) {
+        console.error('Auto-save failed:', error);
+        // Don't throw the error to prevent app crash
+      }
     }, 1000);
 
     return () => clearTimeout(timeoutId);

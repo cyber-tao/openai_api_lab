@@ -65,33 +65,64 @@ class StorageService {
      */
     set<T = any>(key: StorageKey, data: T, schema?: ValidationSchema): boolean {
         try {
+            // Basic data validation
+            if (data === undefined) {
+                console.warn(`Attempting to save undefined data for key ${key}`);
+                return false;
+            }
+
             // Validate data if schema provided
             if (schema) {
-                const validation = this.validateData(data, schema);
-                if (!validation.valid) {
-                    console.error(`Invalid data for key ${key}:`, validation.errors);
-                    return false;
+                try {
+                    const validation = this.validateData(data, schema);
+                    if (!validation.valid) {
+                        console.error(`Invalid data for key ${key}:`, validation.errors);
+                        // Don't return false immediately, try to save anyway for recovery
+                        console.warn('Attempting to save invalid data for recovery purposes');
+                    }
+                } catch (validationError) {
+                    console.error(`Validation error for key ${key}:`, validationError);
+                    // Continue with save attempt
                 }
             }
 
+            // Serialize data with error handling
+            let serialized: string;
+            try {
+                serialized = JSON.stringify(data);
+            } catch (serializationError) {
+                console.error(`Failed to serialize data for key ${key}:`, serializationError);
+                return false;
+            }
+
             // Check storage quota before saving
-            const serialized = JSON.stringify(data);
             const size = new Blob([serialized]).size;
 
             if (!this.checkStorageQuota(size)) {
                 console.warn('Storage quota exceeded, attempting cleanup');
-                this.cleanup();
+                try {
+                    this.cleanup();
+                } catch (cleanupError) {
+                    console.error('Cleanup failed:', cleanupError);
+                }
 
                 // Check again after cleanup
                 if (!this.checkStorageQuota(size)) {
-                    throw new Error('Storage quota exceeded even after cleanup');
+                    console.error('Storage quota exceeded even after cleanup');
+                    return false;
                 }
             }
 
+            // Save to localStorage
             localStorage.setItem(key, serialized);
 
-            // Notify listeners
-            this.notifyListeners(key, data);
+            // Notify listeners with error handling
+            try {
+                this.notifyListeners(key, data);
+            } catch (notificationError) {
+                console.error('Failed to notify listeners:', notificationError);
+                // Don't fail the save operation for notification errors
+            }
 
             return true;
         } catch (error) {

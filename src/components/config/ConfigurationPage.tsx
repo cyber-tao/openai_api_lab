@@ -27,6 +27,7 @@ import {
   AppstoreOutlined,
   CalculatorOutlined,
   DollarOutlined,
+  BugOutlined,
 } from '@ant-design/icons';
 import type { APIConfig, ConnectionTestResult } from '../../types';
 import { useConfigStore } from '../../stores/configStore';
@@ -36,6 +37,7 @@ import { ConnectionTest } from './ConnectionTest';
 import { ModelList } from './ModelList';
 import { TokenCalculator } from './TokenCalculator';
 import { ModelComparison } from './ModelComparison';
+import { ConfigDebugger } from './ConfigDebugger';
 
 const { Title, Text } = Typography;
 const { Content } = Layout;
@@ -358,6 +360,16 @@ export const ConfigurationPage: React.FC = () => {
                 </Space>
               ),
               children: <ModelComparison />,
+            },
+            {
+              key: 'debug',
+              label: (
+                <Space>
+                  <BugOutlined />
+                  Debug
+                </Space>
+              ),
+              children: <ConfigDebugger />,
             },
           ]}
         />

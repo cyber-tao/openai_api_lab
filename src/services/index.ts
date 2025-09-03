@@ -18,6 +18,12 @@ export {
   cleanOldBackups,
 } from './migrations';
 
+// File processing services
+export { fileProcessingService } from './fileProcessingService';
+
+// Export services
+export { ExportService } from './exportService';
+
 // Re-export storage types for convenience
 export type {
   StorageKey,

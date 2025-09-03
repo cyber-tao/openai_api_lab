@@ -73,6 +73,39 @@ export const MODEL_PRICE_SCHEMA: ValidationSchema = {
   },
 };
 
+// Model Info validation schema
+export const MODEL_INFO_SCHEMA: ValidationSchema = {
+  type: 'object',
+  required: ['id', 'name', 'type', 'contextLength', 'capabilities', 'provider'],
+  properties: {
+    id: { type: 'string', minLength: 1 },
+    name: { type: 'string', minLength: 1 },
+    type: { type: 'string', pattern: '^(text|multimodal|embedding|image|audio)$' },
+    contextLength: { type: 'number' },
+    inputPrice: { type: 'number' },
+    outputPrice: { type: 'number' },
+    capabilities: {
+      type: 'array',
+      items: {
+        type: 'object',
+        required: ['type'],
+        properties: {
+          type: { type: 'string' },
+          description: { type: 'string' },
+        },
+      },
+    },
+    description: { type: 'string' },
+    provider: { type: 'string', minLength: 1 },
+    customPrice: MODEL_PRICE_SCHEMA,
+    maxFileSize: { type: 'number' },
+    supportedFormats: {
+      type: 'array',
+      items: { type: 'string' },
+    },
+  },
+};
+
 // App Settings validation schema
 export const APP_SETTINGS_SCHEMA: ValidationSchema = {
   type: 'object',

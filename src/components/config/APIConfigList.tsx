@@ -189,16 +189,16 @@ export const APIConfigList: React.FC<APIConfigListProps> = ({
 
                 {/* Parameters Summary */}
                 <Space wrap size={4}>
-                  {config.parameters.temperature !== undefined && (
+                  {config.parameters?.temperature !== undefined && (
                     <Tag>T: {config.parameters.temperature}</Tag>
                   )}
-                  {config.parameters.maxTokens && (
+                  {config.parameters?.maxTokens && (
                     <Tag>Max: {config.parameters.maxTokens}</Tag>
                   )}
-                  {config.parameters.topP !== undefined && config.parameters.topP !== 1 && (
+                  {config.parameters?.topP !== undefined && config.parameters.topP !== 1 && (
                     <Tag>Top-P: {config.parameters.topP}</Tag>
                   )}
-                  {config.parameters.stream && (
+                  {config.parameters?.stream && (
                     <Tag color="blue">Streaming</Tag>
                   )}
                 </Space>

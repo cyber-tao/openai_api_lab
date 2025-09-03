@@ -292,72 +292,99 @@ export class OpenAIAPIClient {
     controller: AbortController,
     onStream: (chunk: string) => void
   ): Promise<any> {
-    const response = await this.client.post('/chat/completions', requestData, {
-      responseType: 'stream',
-      signal: controller.signal,
-    });
+    try {
+      const response = await fetch(`${this.config.endpoint}/chat/completions`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${this.config.apiKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestData),
+        signal: controller.signal,
+      });
 
-    let fullContent = '';
-    let usage: TokenUsage | undefined;
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
 
-    return new Promise((resolve, reject) => {
-      response.data.on('data', (chunk: Buffer) => {
-        const lines = chunk.toString().split('\n');
-        
-        for (const line of lines) {
-          if (line.startsWith('data: ')) {
-            const data = line.slice(6).trim();
-            
-            if (data === '[DONE]') {
-              resolve({
-                choices: [{
-                  message: {
-                    role: 'assistant',
-                    content: fullContent
-                  },
-                  finish_reason: 'stop'
-                }],
-                usage
-              });
-              return;
-            }
+      if (!response.body) {
+        throw new Error('Response body is null');
+      }
 
-            try {
-              const parsed = JSON.parse(data);
-              const delta = parsed.choices?.[0]?.delta;
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      let fullContent = '';
+      let usage: TokenUsage | undefined;
+
+      return new Promise((resolve, reject) => {
+        const processStream = async () => {
+          try {
+            while (true) {
+              const { done, value } = await reader.read();
               
-              if (delta?.content) {
-                fullContent += delta.content;
-                onStream(delta.content);
+              if (done) {
+                resolve({
+                  choices: [{
+                    message: {
+                      role: 'assistant',
+                      content: fullContent
+                    },
+                    finish_reason: 'stop'
+                  }],
+                  usage
+                });
+                break;
               }
 
-              if (parsed.usage) {
-                usage = parsed.usage;
+              const chunk = decoder.decode(value, { stream: true });
+              const lines = chunk.split('\n');
+
+              for (const line of lines) {
+                if (line.startsWith('data: ')) {
+                  const data = line.slice(6).trim();
+                  
+                  if (data === '[DONE]') {
+                    resolve({
+                      choices: [{
+                        message: {
+                          role: 'assistant',
+                          content: fullContent
+                        },
+                        finish_reason: 'stop'
+                      }],
+                      usage
+                    });
+                    return;
+                  }
+
+                  try {
+                    const parsed = JSON.parse(data);
+                    const delta = parsed.choices?.[0]?.delta;
+                    
+                    if (delta?.content) {
+                      fullContent += delta.content;
+                      onStream(delta.content);
+                    }
+
+                    if (parsed.usage) {
+                      usage = parsed.usage;
+                    }
+                  } catch {
+                    // Ignore parsing errors for malformed chunks
+                  }
+                }
               }
-            } catch {
-              // Ignore parsing errors for malformed chunks
             }
+          } catch (error) {
+            reject(this.handleError(error));
           }
-        }
-      });
+        };
 
-      response.data.on('error', (error: any) => {
-        reject(this.handleError(error));
+        processStream();
       });
-
-      response.data.on('end', () => {
-        resolve({
-          choices: [{
-            message: {
-              role: 'assistant',
-              content: fullContent
-            },
-            finish_reason: 'stop'
-          }],
-          usage
-        });
-      });
-    });
+    } catch (error) {
+      throw this.handleError(error);
+    }
   }
 
   /**

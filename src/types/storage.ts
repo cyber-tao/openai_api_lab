@@ -7,6 +7,7 @@
 export const STORAGE_KEYS = {
   API_CONFIGS: 'openai-lab-configs',
   CHAT_SESSIONS: 'openai-lab-sessions',
+  MODELS: 'openai-lab-models',
   MODEL_PRICES: 'openai-lab-prices',
   APP_SETTINGS: 'openai-lab-settings',
   USAGE_STATS: 'openai-lab-stats',
