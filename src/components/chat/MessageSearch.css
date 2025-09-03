@@ -1,0 +1,142 @@
+/**
+ * Message Search Styles
+ * Styling for the message search component
+ */
+
+.message-search {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 350px;
+  max-height: 500px;
+  z-index: 1000;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--border-primary, #404040);
+  background: var(--bg-secondary, #1a1a1a);
+}
+
+.search-input-section {
+  margin-bottom: 12px;
+}
+
+.search-options {
+  margin-top: 8px;
+}
+
+.search-summary {
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border-secondary, #262626);
+  margin-bottom: 8px;
+}
+
+.search-results {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.search-placeholder {
+  padding: 20px;
+  text-align: center;
+}
+
+.search-result-item {
+  cursor: pointer;
+  padding: 8px 12px !important;
+  border-radius: 6px;
+  margin-bottom: 4px;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+}
+
+.search-result-item:hover {
+  background-color: var(--bg-tertiary, #262626);
+  border-color: var(--border-primary, #404040);
+}
+
+.search-result-item.active {
+  background-color: var(--accent-primary, #3b82f6);
+  border-color: var(--accent-primary, #3b82f6);
+}
+
+.search-result-item.active .search-result-content {
+  color: white;
+}
+
+.search-result-content {
+  width: 100%;
+}
+
+.search-result-header {
+  margin-bottom: 4px;
+}
+
+.search-result-text {
+  margin-bottom: 4px;
+  line-height: 1.4;
+}
+
+.search-result-meta {
+  margin-top: 4px;
+}
+
+.search-highlight {
+  background-color: var(--accent-warning, #f59e0b);
+  color: var(--bg-primary, #0f0f0f);
+  padding: 1px 2px;
+  border-radius: 2px;
+  font-weight: 500;
+}
+
+.search-result-item.active .search-highlight {
+  background-color: rgba(255, 255, 255, 0.3);
+  color: white;
+}
+
+/* Scrollbar styling */
+.search-results::-webkit-scrollbar {
+  width: 6px;
+}
+
+.search-results::-webkit-scrollbar-track {
+  background: var(--bg-primary, #0f0f0f);
+  border-radius: 3px;
+}
+
+.search-results::-webkit-scrollbar-thumb {
+  background: var(--border-primary, #404040);
+  border-radius: 3px;
+}
+
+.search-results::-webkit-scrollbar-thumb:hover {
+  background: var(--text-tertiary, #737373);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .message-search {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    right: 10px;
+    width: auto;
+    max-height: 70vh;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .search-result-item {
+    border-width: 2px;
+  }
+  
+  .search-highlight {
+    border: 1px solid var(--bg-primary, #0f0f0f);
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .search-result-item {
+    transition: none;
+  }
+}

@@ -68,8 +68,7 @@ export const APIConfigList: React.FC<APIConfigListProps> = ({
   // Filter configs based on search query
   const filteredConfigs = configs.filter(config =>
     config.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    config.endpoint.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    config.model?.toLowerCase().includes(searchQuery.toLowerCase())
+    config.endpoint.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const handleTest = async (config: APIConfig) => {
@@ -174,11 +173,7 @@ export const APIConfigList: React.FC<APIConfigListProps> = ({
                   <Text type="secondary" style={{ fontSize: '12px' }}>
                     <ApiOutlined /> {config.endpoint}
                   </Text>
-                  {config.model && (
-                    <Text type="secondary" style={{ fontSize: '12px' }}>
-                      Model: {config.model}
-                    </Text>
-                  )}
+
                   <Text type="secondary" style={{ fontSize: '11px' }}>
                     Created: {formatDate(config.createdAt)}
                     {config.updatedAt !== config.createdAt && (
@@ -323,7 +318,14 @@ export const APIConfigList: React.FC<APIConfigListProps> = ({
           box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
         .config-item.active {
-          background-color: #f6ffed;
+          background-color: rgba(24, 144, 255, 0.08);
+          border-color: #1890ff !important;
+        }
+        .config-item.active .ant-typography {
+          color: inherit;
+        }
+        .config-item.active .ant-typography-secondary {
+          color: rgba(0, 0, 0, 0.65);
         }
       `}</style>
     </div>

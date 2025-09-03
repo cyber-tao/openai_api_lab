@@ -1,0 +1,112 @@
+/**
+ * Statistics Summary Cards Styles
+ */
+
+.stats-summary-cards {
+  margin-bottom: 24px;
+}
+
+.summary-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-primary);
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  height: 100%;
+}
+
+.summary-card:hover {
+  border-color: var(--accent-primary);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1);
+  transform: translateY(-2px);
+}
+
+.summary-card .ant-card-body {
+  padding: 20px;
+}
+
+.summary-card .ant-statistic {
+  text-align: center;
+}
+
+.summary-card .ant-statistic-title {
+  color: var(--text-secondary);
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+.summary-card .ant-statistic-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.summary-card .ant-statistic-content-prefix {
+  font-size: 20px;
+}
+
+.summary-card .ant-statistic-content-value {
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 1;
+}
+
+/* Specific card styling */
+.messages-card {
+  border-left: 4px solid var(--accent-primary);
+}
+
+.sessions-card {
+  border-left: 4px solid var(--accent-success);
+}
+
+.tokens-card {
+  border-left: 4px solid var(--accent-warning);
+}
+
+.cost-card {
+  border-left: 4px solid var(--accent-error);
+}
+
+.avg-card {
+  border-left: 4px solid var(--text-secondary);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .summary-card .ant-statistic-content-value {
+    font-size: 20px;
+  }
+
+  .summary-card .ant-statistic-content-prefix {
+    font-size: 18px;
+  }
+
+  .summary-card .ant-card-body {
+    padding: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .summary-card .ant-statistic-content-value {
+    font-size: 18px;
+  }
+
+  .summary-card .ant-statistic-content-prefix {
+    font-size: 16px;
+  }
+
+  .summary-card .ant-card-body {
+    padding: 12px;
+  }
+}
+
+/* Animation for value changes */
+.summary-card .ant-statistic-content-value {
+  transition: all 0.3s ease;
+}
+
+.summary-card:hover .ant-statistic-content-value {
+  transform: scale(1.05);
+}

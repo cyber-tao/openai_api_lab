@@ -44,7 +44,6 @@ interface FormData {
   name: string;
   endpoint: string;
   apiKey: string;
-  model: string;
   isDefault: boolean;
   parameters: APIParameters;
 }
@@ -85,7 +84,6 @@ export const APIConfigForm: React.FC<APIConfigFormProps> = ({
         name: config.name,
         endpoint: config.endpoint,
         apiKey: config.apiKey,
-        model: config.model || '',
         isDefault: config.isDefault,
         parameters: { ...DEFAULT_PARAMETERS, ...config.parameters },
       });
@@ -95,7 +93,6 @@ export const APIConfigForm: React.FC<APIConfigFormProps> = ({
         name: '',
         endpoint: '',
         apiKey: '',
-        model: '',
         isDefault: false,
         parameters: DEFAULT_PARAMETERS,
       });
@@ -178,34 +175,19 @@ export const APIConfigForm: React.FC<APIConfigFormProps> = ({
         autoComplete="off"
       >
         {/* Basic Configuration */}
-        <Row gutter={16}>
-          <Col span={12}>
-            <Form.Item
-              name="name"
-              label="Configuration Name"
-              rules={[
-                { required: true, message: 'Please enter a configuration name' },
-                { min: 2, message: 'Name must be at least 2 characters' },
-              ]}
-            >
-              <Input
-                placeholder="e.g., OpenAI GPT-4, Local Ollama"
-                prefix={<InfoCircleOutlined />}
-              />
-            </Form.Item>
-          </Col>
-          <Col span={12}>
-            <Form.Item
-              name="model"
-              label="Default Model"
-              tooltip="Default model to use with this configuration"
-            >
-              <Input
-                placeholder="e.g., gpt-4, gpt-3.5-turbo, llama2"
-              />
-            </Form.Item>
-          </Col>
-        </Row>
+        <Form.Item
+          name="name"
+          label="Configuration Name"
+          rules={[
+            { required: true, message: 'Please enter a configuration name' },
+            { min: 2, message: 'Name must be at least 2 characters' },
+          ]}
+        >
+          <Input
+            placeholder="e.g., OpenAI GPT-4, Local Ollama"
+            prefix={<InfoCircleOutlined />}
+          />
+        </Form.Item>
 
         {/* API Endpoint */}
         <Form.Item label="API Endpoint">

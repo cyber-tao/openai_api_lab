@@ -6,6 +6,8 @@
 import React, { useState, useMemo } from 'react';
 import { Typography, Button, Tooltip } from 'antd';
 import { CopyOutlined, CheckOutlined } from '@ant-design/icons';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import './MessageContent.css';
 
 const { Text } = Typography;
@@ -118,11 +120,25 @@ export const MessageContent: React.FC<MessageContentProps> = ({
             />
           </Tooltip>
         </div>
-        <pre className="code-block">
-          <code className={`language-${block.language}`}>
+        <div className="code-block-wrapper">
+          <SyntaxHighlighter
+            language={block.language}
+            style={oneDark}
+            customStyle={{
+              margin: 0,
+              borderRadius: '0 0 6px 6px',
+              fontSize: '13px',
+              lineHeight: '1.4',
+            }}
+            codeTagProps={{
+              style: {
+                fontFamily: 'Fira Code, Monaco, Consolas, "Ubuntu Mono", monospace',
+              }
+            }}
+          >
             {block.code}
-          </code>
-        </pre>
+          </SyntaxHighlighter>
+        </div>
       </div>
     );
   };

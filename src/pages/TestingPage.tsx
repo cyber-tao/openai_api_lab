@@ -4,21 +4,10 @@
  */
 
 import React from 'react';
-import { Card, Typography } from 'antd';
-
-const { Title, Paragraph } = Typography;
+import { TestingPage as TestingPageComponent } from '../components/testing';
 
 export const TestingPage: React.FC = () => {
-  return (
-    <div style={{ padding: '24px' }}>
-      <Card>
-        <Title level={2}>Testing</Title>
-        <Paragraph>
-          Performance testing, model comparison, and benchmarking tools. This page will contain the testing functionality.
-        </Paragraph>
-      </Card>
-    </div>
-  );
+  return <TestingPageComponent />;
 };
 
 export default TestingPage;

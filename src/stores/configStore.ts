@@ -18,6 +18,7 @@ interface ConfigState {
   // Models
   models: ModelInfo[];
   modelPrices: Record<string, ModelPrice>;
+  selectedModelId: string | null;
   
   // Loading states
   loading: {
@@ -43,6 +44,8 @@ interface ConfigState {
   setModels: (models: ModelInfo[]) => void;
   updateModelPrice: (modelId: string, price: ModelPrice) => void;
   getModelPrice: (modelId: string) => ModelPrice | null;
+  setSelectedModel: (modelId: string | null) => void;
+  getSelectedModel: () => ModelInfo | null;
   
   setLoading: (key: keyof ConfigState['loading'], value: boolean) => void;
   setError: (key: keyof ConfigState['errors'], value: string | null) => void;
@@ -62,6 +65,7 @@ const initialState = {
   activeConfigId: null,
   models: [],
   modelPrices: {},
+  selectedModelId: null,
   loading: {
     configs: false,
     models: false,
@@ -216,6 +220,18 @@ export const useConfigStore = create<ConfigState>()(
       return modelPrices[modelId] || null;
     },
 
+    // Set selected model
+    setSelectedModel: (modelId) => {
+      set({ selectedModelId: modelId });
+      get().saveToStorage();
+    },
+
+    // Get selected model
+    getSelectedModel: () => {
+      const { models, selectedModelId } = get();
+      return models.find(model => model.id === selectedModelId) || null;
+    },
+
     // Set loading state
     setLoading: (key, value) => {
       set((state) => ({
@@ -264,14 +280,16 @@ export const useConfigStore = create<ConfigState>()(
           STORAGE_KEYS.MODEL_PRICES
         ) || {};
 
-        // Load active config ID from settings
+        // Load active config ID and selected model ID from settings
         const settings = storageService.get(STORAGE_KEYS.APP_SETTINGS);
         const activeConfigId = settings?.activeConfigId || configs.find(c => c.isDefault)?.id || configs[0]?.id || null;
+        const selectedModelId = settings?.selectedModelId || null;
 
         set({
           configs,
           modelPrices,
           activeConfigId,
+          selectedModelId,
         });
       } catch (error) {
         console.error('Failed to load config data from storage:', error);
@@ -324,9 +342,11 @@ export const useConfigStore = create<ConfigState>()(
           throw new Error('Failed to save configurations to storage');
         }
 
-        // Save active config ID to settings
+        // Save active config ID and selected model ID to settings
+        const { selectedModelId } = get();
         const settings = storageService.get(STORAGE_KEYS.APP_SETTINGS) || {};
         settings.activeConfigId = activeConfigId;
+        settings.selectedModelId = selectedModelId;
         settings.lastUpdated = Date.now();
         
         const settingsSaveSuccess = storageService.set(STORAGE_KEYS.APP_SETTINGS, settings);
@@ -392,7 +412,7 @@ export const useConfigStore = create<ConfigState>()(
 
 // Auto-save subscription with error handling
 useConfigStore.subscribe(
-  (state) => ({ configs: state.configs, activeConfigId: state.activeConfigId }),
+  (state) => ({ configs: state.configs, activeConfigId: state.activeConfigId, selectedModelId: state.selectedModelId }),
   () => {
     // Debounced auto-save with error handling
     const timeoutId = setTimeout(() => {
@@ -406,7 +426,7 @@ useConfigStore.subscribe(
 
     return () => clearTimeout(timeoutId);
   },
-  { equalityFn: (a, b) => a.configs === b.configs && a.activeConfigId === b.activeConfigId }
+  { equalityFn: (a, b) => a.configs === b.configs && a.activeConfigId === b.activeConfigId && a.selectedModelId === b.selectedModelId }
 );
 
 // Load initial data

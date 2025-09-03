@@ -1,0 +1,190 @@
+/**
+ * Model Usage Chart Styles
+ */
+
+.model-usage-chart {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.chart-section {
+  flex: 1;
+}
+
+.chart-section h4 {
+  margin: 0 0 12px 0;
+  color: var(--text-primary);
+  font-size: 14px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.bar-chart-container,
+.pie-chart-container {
+  height: 200px;
+}
+
+.chart-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.chart-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  color: var(--text-secondary);
+}
+
+.chart-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+.chart-empty .anticon {
+  font-size: 48px;
+  opacity: 0.5;
+}
+
+.chart-empty small {
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+.model-stats {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border-secondary);
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+.model-stat {
+  padding: 12px;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-secondary);
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.model-stat:hover {
+  border-color: var(--accent-primary);
+  background: var(--bg-secondary);
+}
+
+.model-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.model-metrics {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.metric {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.metric-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.metric-label {
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+
+/* Recharts customization */
+.model-usage-chart .recharts-cartesian-grid-horizontal line,
+.model-usage-chart .recharts-cartesian-grid-vertical line {
+  stroke: var(--border-secondary);
+  stroke-opacity: 0.5;
+}
+
+.model-usage-chart .recharts-tooltip-wrapper {
+  z-index: 1000;
+}
+
+.model-usage-chart .recharts-pie-label-text {
+  fill: var(--text-primary);
+  font-size: 12px;
+}
+
+.model-usage-chart .recharts-text {
+  fill: var(--text-secondary);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .model-usage-chart {
+    gap: 12px;
+  }
+
+  .bar-chart-container,
+  .pie-chart-container {
+    height: 150px;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 8px;
+  }
+
+  .model-stat {
+    padding: 8px;
+  }
+
+  .model-name {
+    font-size: 12px;
+  }
+
+  .metric-value {
+    font-size: 12px;
+  }
+
+  .metric-label {
+    font-size: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .bar-chart-container,
+  .pie-chart-container {
+    height: 120px;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .model-metrics {
+    justify-content: space-around;
+  }
+}

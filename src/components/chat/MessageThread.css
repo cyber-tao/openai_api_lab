@@ -1,0 +1,189 @@
+/**
+ * Message Thread Styles
+ * Styling for the message thread management component
+ */
+
+.message-thread {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  width: 400px;
+  max-height: 600px;
+  z-index: 1000;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--border-primary, #404040);
+  background: var(--bg-secondary, #1a1a1a);
+}
+
+.thread-stats {
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border-secondary, #262626);
+  margin-bottom: 12px;
+}
+
+.stat-item {
+  text-align: center;
+  min-width: 60px;
+}
+
+.thread-tree-container {
+  max-height: 300px;
+  overflow-y: auto;
+  margin-bottom: 12px;
+}
+
+.thread-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  text-align: center;
+}
+
+.message-tree {
+  background: transparent;
+}
+
+.message-tree .ant-tree-node-content-wrapper {
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.message-tree .ant-tree-node-content-wrapper:hover {
+  background-color: var(--bg-tertiary, #262626);
+}
+
+.message-tree .ant-tree-node-content-wrapper.ant-tree-node-selected {
+  background-color: var(--accent-primary, #3b82f6);
+  color: white;
+}
+
+.thread-node-title {
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.role-indicator {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  font-size: 10px;
+  font-weight: bold;
+  color: white;
+}
+
+.role-indicator.role-user {
+  background-color: #1890ff;
+}
+
+.role-indicator.role-assistant {
+  background-color: #52c41a;
+}
+
+.role-indicator.role-system {
+  background-color: #faad14;
+}
+
+.selected-message-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background-color: var(--bg-tertiary, #262626);
+  border-radius: 6px;
+  border-top: 1px solid var(--border-secondary, #262626);
+}
+
+.selected-message-info {
+  flex: 1;
+}
+
+/* Tree line styling for dark theme */
+.message-tree .ant-tree-switcher {
+  color: var(--text-tertiary, #737373);
+}
+
+.message-tree .ant-tree-switcher-line-icon {
+  color: var(--border-primary, #404040);
+}
+
+/* Scrollbar styling */
+.thread-tree-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.thread-tree-container::-webkit-scrollbar-track {
+  background: var(--bg-primary, #0f0f0f);
+  border-radius: 3px;
+}
+
+.thread-tree-container::-webkit-scrollbar-thumb {
+  background: var(--border-primary, #404040);
+  border-radius: 3px;
+}
+
+.thread-tree-container::-webkit-scrollbar-thumb:hover {
+  background: var(--text-tertiary, #737373);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .message-thread {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    right: 10px;
+    width: auto;
+    max-height: 80vh;
+  }
+  
+  .thread-stats {
+    padding: 8px 0;
+  }
+  
+  .stat-item {
+    min-width: 50px;
+  }
+  
+  .selected-message-actions {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .role-indicator {
+    border: 2px solid white;
+  }
+  
+  .message-tree .ant-tree-node-content-wrapper {
+    border: 1px solid transparent;
+  }
+  
+  .message-tree .ant-tree-node-content-wrapper:hover {
+    border-color: var(--border-primary, #404040);
+  }
+  
+  .message-tree .ant-tree-node-content-wrapper.ant-tree-node-selected {
+    border-color: var(--accent-primary, #3b82f6);
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .message-tree .ant-tree-node-content-wrapper {
+    transition: none;
+  }
+  
+  .role-indicator {
+    transition: none;
+  }
+}

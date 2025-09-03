@@ -1,0 +1,238 @@
+/**
+ * Statistics Page Styles
+ */
+
+.statistics-page {
+  padding: 24px;
+  background: var(--bg-primary);
+  min-height: 100vh;
+}
+
+.statistics-page-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  gap: 16px;
+}
+
+.statistics-page-loading p {
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.statistics-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 24px;
+  gap: 24px;
+}
+
+.statistics-title h1 {
+  color: var(--text-primary);
+  margin: 0 0 8px 0;
+  font-size: 28px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.statistics-title p {
+  color: var(--text-secondary);
+  margin: 0;
+  font-size: 14px;
+}
+
+.statistics-controls {
+  flex-shrink: 0;
+}
+
+.statistics-content {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.charts-row {
+  margin-bottom: 0;
+}
+
+.chart-card,
+.table-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-primary);
+  border-radius: 8px;
+  height: 100%;
+}
+
+.chart-card .ant-card-head,
+.table-card .ant-card-head {
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-primary);
+}
+
+.chart-card .ant-card-head-title,
+.table-card .ant-card-head-title {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.chart-card .ant-card-body,
+.table-card .ant-card-body {
+  padding: 20px;
+}
+
+.error-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--accent-error);
+  border-radius: 8px;
+  margin-bottom: 24px;
+}
+
+.error-card p {
+  color: var(--accent-error);
+  margin: 0 0 12px 0;
+}
+
+/* Chart containers */
+.chart-container {
+  width: 100%;
+  height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.chart-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  color: var(--text-secondary);
+}
+
+.chart-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+.chart-empty .anticon {
+  font-size: 48px;
+  opacity: 0.5;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .statistics-page {
+    padding: 16px;
+  }
+
+  .statistics-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+  }
+
+  .statistics-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .statistics-controls .ant-space {
+    flex-wrap: wrap;
+  }
+
+  .statistics-title h1 {
+    font-size: 24px;
+  }
+
+  .chart-container {
+    height: 250px;
+  }
+}
+
+@media (max-width: 480px) {
+  .statistics-page {
+    padding: 12px;
+  }
+
+  .statistics-controls .ant-space {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .statistics-controls .ant-space > * {
+    width: 100%;
+  }
+
+  .chart-container {
+    height: 200px;
+  }
+}
+
+/* Dark theme adjustments */
+.statistics-page .ant-picker {
+  background: var(--bg-secondary);
+  border-color: var(--border-primary);
+  color: var(--text-primary);
+}
+
+.statistics-page .ant-picker:hover {
+  border-color: var(--accent-primary);
+}
+
+.statistics-page .ant-picker-focused {
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+}
+
+.statistics-page .ant-select {
+  color: var(--text-primary);
+}
+
+.statistics-page .ant-select .ant-select-selector {
+  background: var(--bg-secondary);
+  border-color: var(--border-primary);
+  color: var(--text-primary);
+}
+
+.statistics-page .ant-select:hover .ant-select-selector {
+  border-color: var(--accent-primary);
+}
+
+.statistics-page .ant-select-focused .ant-select-selector {
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+}
+
+.statistics-page .ant-btn {
+  background: var(--bg-secondary);
+  border-color: var(--border-primary);
+  color: var(--text-primary);
+}
+
+.statistics-page .ant-btn:hover {
+  background: var(--bg-tertiary);
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+}
+
+.statistics-page .ant-btn-primary {
+  background: var(--accent-primary);
+  border-color: var(--accent-primary);
+  color: white;
+}
+
+.statistics-page .ant-btn-primary:hover {
+  background: var(--accent-primary);
+  border-color: var(--accent-primary);
+  opacity: 0.8;
+}

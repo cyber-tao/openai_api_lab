@@ -1,0 +1,197 @@
+/**
+ * Top Models Table Styles
+ */
+
+.top-models-table {
+  width: 100%;
+}
+
+.models-table {
+  background: var(--bg-secondary);
+}
+
+.models-table .ant-table {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+.models-table .ant-table-thead > tr > th {
+  background: var(--bg-tertiary);
+  border-bottom: 1px solid var(--border-primary);
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.models-table .ant-table-tbody > tr > td {
+  border-bottom: 1px solid var(--border-secondary);
+  background: var(--bg-secondary);
+}
+
+.models-table .ant-table-tbody > tr:hover > td {
+  background: var(--bg-tertiary);
+}
+
+.models-table .ant-table-pagination {
+  background: var(--bg-secondary);
+}
+
+.models-table .ant-pagination-item {
+  background: var(--bg-secondary);
+  border-color: var(--border-primary);
+}
+
+.models-table .ant-pagination-item a {
+  color: var(--text-primary);
+}
+
+.models-table .ant-pagination-item:hover {
+  border-color: var(--accent-primary);
+}
+
+.models-table .ant-pagination-item-active {
+  background: var(--accent-primary);
+  border-color: var(--accent-primary);
+}
+
+.models-table .ant-pagination-item-active a {
+  color: white;
+}
+
+/* Cell styles */
+.model-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.model-name {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.model-name .anticon {
+  color: var(--accent-primary);
+}
+
+.model-type {
+  display: flex;
+  align-items: center;
+}
+
+.metric-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.metric-value {
+  font-weight: 600;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.cost-value {
+  color: var(--accent-error);
+}
+
+.response-time {
+  color: var(--accent-warning);
+}
+
+.usage-period {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.period-date {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.efficiency-value {
+  font-weight: 600;
+  color: var(--accent-success);
+  text-align: center;
+}
+
+/* Progress bar customization */
+.models-table .ant-progress-bg {
+  background: var(--bg-tertiary);
+}
+
+.models-table .ant-progress-inner {
+  background: var(--bg-tertiary);
+}
+
+/* Tag customization */
+.models-table .ant-tag {
+  margin: 0;
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .models-table .ant-table-thead > tr > th,
+  .models-table .ant-table-tbody > tr > td {
+    padding: 8px 4px;
+  }
+
+  .model-name {
+    font-size: 13px;
+  }
+
+  .metric-value {
+    font-size: 13px;
+  }
+
+  .period-date {
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 480px) {
+  .models-table .ant-table-thead > tr > th,
+  .models-table .ant-table-tbody > tr > td {
+    padding: 6px 2px;
+  }
+
+  .model-name {
+    font-size: 12px;
+  }
+
+  .metric-value {
+    font-size: 12px;
+  }
+
+  .period-date {
+    font-size: 10px;
+  }
+}
+
+/* Loading state */
+.models-table .ant-spin-container {
+  background: var(--bg-secondary);
+}
+
+.models-table .ant-table-placeholder {
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+}
+
+/* Sorting indicators */
+.models-table .ant-table-column-sorter {
+  color: var(--text-secondary);
+}
+
+.models-table .ant-table-column-sorter-up.active,
+.models-table .ant-table-column-sorter-down.active {
+  color: var(--accent-primary);
+}

@@ -29,6 +29,7 @@ import {
   InfoCircleOutlined,
   ReloadOutlined,
   SettingOutlined,
+
 } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
 import type { ModelInfo, ModelPrice, APIConfig } from '../../types';
@@ -68,7 +69,7 @@ export const ModelList: React.FC<ModelListProps> = ({
   const [searchText, setSearchText] = useState('');
   const [typeFilter, setTypeFilter] = useState<string>('all');
   const [providerFilter, setProviderFilter] = useState<string>('all');
-  const [selectedModel, setSelectedModel] = useState<ModelInfo | null>(null);
+  const [selectedModelLocal, setSelectedModelLocal] = useState<ModelInfo | null>(null);
   const [showPriceModal, setShowPriceModal] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
 
@@ -147,19 +148,21 @@ export const ModelList: React.FC<ModelListProps> = ({
 
   // Handle price configuration
   const handleConfigurePrice = (model: ModelInfo) => {
-    setSelectedModel(model);
+    setSelectedModelLocal(model);
     setShowPriceModal(true);
   };
 
   // Handle price save
   const handlePriceSave = (price: ModelPrice) => {
-    if (selectedModel) {
-      updateModelPrice(selectedModel.id, price);
+    if (selectedModelLocal) {
+      updateModelPrice(selectedModelLocal.id, price);
       message.success('Model price updated successfully');
       setShowPriceModal(false);
-      setSelectedModel(null);
+      setSelectedModelLocal(null);
     }
   };
+
+
 
   // Get model price display
   const getModelPriceDisplay = (model: ModelInfo) => {
@@ -202,6 +205,7 @@ export const ModelList: React.FC<ModelListProps> = ({
       dataIndex: 'name',
       key: 'name',
       width: 200,
+      sorter: (a, b) => a.name.localeCompare(b.name),
       render: (name: string, model: ModelInfo) => (
         <Space direction="vertical" size={0}>
           <Text strong>{name}</Text>
@@ -224,6 +228,9 @@ export const ModelList: React.FC<ModelListProps> = ({
       dataIndex: 'type',
       key: 'type',
       width: 100,
+      sorter: (a, b) => a.type.localeCompare(b.type),
+      filters: types.map(type => ({ text: type.charAt(0).toUpperCase() + type.slice(1), value: type })),
+      onFilter: (value, record) => record.type === value,
       render: (type: string) => {
         const colors = {
           text: 'blue',
@@ -240,15 +247,25 @@ export const ModelList: React.FC<ModelListProps> = ({
       dataIndex: 'provider',
       key: 'provider',
       width: 120,
+      sorter: (a, b) => a.provider.localeCompare(b.provider),
+      filters: providers.map(provider => ({ text: provider, value: provider })),
+      onFilter: (value, record) => record.provider === value,
       render: (provider: string) => <Tag>{provider}</Tag>,
     },
     {
-      title: 'Context',
+      title: 'Context Length',
       dataIndex: 'contextLength',
       key: 'contextLength',
-      width: 100,
+      width: 120,
+      sorter: (a, b) => a.contextLength - b.contextLength,
+      defaultSortOrder: 'descend',
       render: (length: number) => (
-        <Text>{formatNumber(length)}</Text>
+        <Space direction="vertical" size={0}>
+          <Text strong>{formatNumber(length)}</Text>
+          <Text type="secondary" style={{ fontSize: '11px' }}>
+            tokens
+          </Text>
+        </Space>
       ),
     },
     {
@@ -256,16 +273,17 @@ export const ModelList: React.FC<ModelListProps> = ({
       dataIndex: 'capabilities',
       key: 'capabilities',
       width: 150,
+      sorter: (a, b) => a.capabilities.length - b.capabilities.length,
       render: (capabilities: ModelInfo['capabilities']) => (
         <Space wrap>
           {capabilities.slice(0, 3).map((cap, index) => (
-            <Tag key={index}>
+            <Tag key={index} style={{ fontSize: '11px', padding: '0 4px' }}>
               {cap.type}
             </Tag>
           ))}
           {capabilities.length > 3 && (
             <Tooltip title={capabilities.slice(3).map(c => c.type).join(', ')}>
-              <Tag>+{capabilities.length - 3}</Tag>
+              <Tag style={{ fontSize: '11px', padding: '0 4px' }}>+{capabilities.length - 3}</Tag>
             </Tooltip>
           )}
         </Space>
@@ -276,9 +294,14 @@ export const ModelList: React.FC<ModelListProps> = ({
   // Add pricing column if enabled
   if (showPricing) {
     columns.push({
-      title: 'Pricing',
+      title: 'Pricing (per 1K tokens)',
       key: 'pricing',
-      width: 120,
+      width: 150,
+      sorter: (a, b) => {
+        const aPrice = getModelPrice(a.id)?.input || a.inputPrice || 0;
+        const bPrice = getModelPrice(b.id)?.input || b.inputPrice || 0;
+        return aPrice - bPrice;
+      },
       render: (_, model: ModelInfo) => getModelPriceDisplay(model),
     });
   }
@@ -427,14 +450,19 @@ export const ModelList: React.FC<ModelListProps> = ({
             dataSource={filteredModels}
             rowKey="id"
             pagination={{
-              pageSize: 10,
+              pageSize: 15,
               showSizeChanger: true,
               showQuickJumper: true,
               showTotal: (total, range) =>
                 `${range[0]}-${range[1]} of ${total} models`,
+              pageSizeOptions: ['10', '15', '25', '50'],
             }}
-            scroll={{ x: 800 }}
+            scroll={{ x: 900 }}
             size="small"
+            showSorterTooltip={{
+              title: 'Click to sort'
+            }}
+            sortDirections={['descend', 'ascend']}
           />
         )}
       </Spin>
@@ -442,12 +470,12 @@ export const ModelList: React.FC<ModelListProps> = ({
       {/* Price Configuration Modal */}
       <PriceConfigModal
         open={showPriceModal}
-        model={selectedModel}
-        currentPrice={selectedModel ? getModelPrice(selectedModel.id) : null}
+        model={selectedModelLocal}
+        currentPrice={selectedModelLocal ? getModelPrice(selectedModelLocal.id) : null}
         onSave={handlePriceSave}
         onCancel={() => {
           setShowPriceModal(false);
-          setSelectedModel(null);
+          setSelectedModelLocal(null);
         }}
       />
     </Card>

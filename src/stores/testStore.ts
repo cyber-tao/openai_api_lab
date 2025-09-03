@@ -105,6 +105,8 @@ interface TestState {
   // Utilities
   reset: () => void;
   getRecentTests: (limit?: number) => PerformanceTest[];
+  getTestById: (id: string) => PerformanceTest | undefined;
+  getTestResults: (testId: string) => TestResult[];
 }
 
 const initialState = {
@@ -611,6 +613,18 @@ export const useTestStore = create<TestState>()(
       return tests
         .sort((a, b) => b.createdAt - a.createdAt)
         .slice(0, limit);
+    },
+
+    // Get test by ID
+    getTestById: (id) => {
+      const { tests } = get();
+      return tests.find(test => test.id === id);
+    },
+
+    // Get test results
+    getTestResults: (testId) => {
+      const { results } = get();
+      return results.filter(result => result.testId === testId);
     },
   }))
 );

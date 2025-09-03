@@ -1,0 +1,75 @@
+/**
+ * Usage Chart Styles
+ */
+
+.usage-chart {
+  width: 100%;
+  height: 300px;
+}
+
+.usage-chart .chart-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.usage-chart .chart-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  color: var(--text-secondary);
+}
+
+.usage-chart .chart-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+.usage-chart .chart-empty .anticon {
+  font-size: 48px;
+  opacity: 0.5;
+}
+
+.usage-chart .chart-empty small {
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+/* Recharts customization */
+.usage-chart .recharts-cartesian-grid-horizontal line,
+.usage-chart .recharts-cartesian-grid-vertical line {
+  stroke: var(--border-secondary);
+  stroke-opacity: 0.5;
+}
+
+.usage-chart .recharts-tooltip-wrapper {
+  z-index: 1000;
+}
+
+.usage-chart .recharts-legend-wrapper {
+  padding-top: 10px;
+}
+
+.usage-chart .recharts-legend-item-text {
+  color: var(--text-primary) !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .usage-chart {
+    height: 250px;
+  }
+}
+
+@media (max-width: 480px) {
+  .usage-chart {
+    height: 200px;
+  }
+}

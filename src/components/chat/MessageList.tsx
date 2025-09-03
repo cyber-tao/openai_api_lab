@@ -3,7 +3,7 @@
  * Displays chat messages with role-based styling and streaming support
  */
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { 
   List, 
   Card, 
@@ -16,7 +16,8 @@ import {
   Alert,
   Spin,
   Empty,
-  Popconfirm
+  Popconfirm,
+  message as antMessage
 } from 'antd';
 import {
   UserOutlined,
@@ -28,12 +29,17 @@ import {
   DollarOutlined,
   FileOutlined,
   EyeOutlined,
-  ExclamationCircleOutlined
+  ExclamationCircleOutlined,
+  SearchOutlined,
+  BranchesOutlined,
+  CheckOutlined
 } from '@ant-design/icons';
 import { useChatStore } from '../../stores/chatStore';
 import { useMessageProcessing } from '../../hooks/useMessageProcessing';
 import type { ChatMessage } from '../../types/chat';
 import { MessageContent } from './MessageContent';
+import MessageSearch from './MessageSearch';
+import MessageThread from './MessageThread';
 import FilePreview from '../common/FilePreview';
 import type { FileAttachment } from '../../types/file';
 import './MessageList.css';
@@ -56,6 +62,11 @@ export const MessageList: React.FC<MessageListProps> = ({
   className,
 }) => {
   const [previewFile, setPreviewFile] = useState<FileAttachment | null>(null);
+  const [showSearch, setShowSearch] = useState(false);
+  const [showThread, setShowThread] = useState(false);
+  const [copiedMessages, setCopiedMessages] = useState<Set<string>>(new Set());
+  const messageRefs = useRef<Map<string, HTMLDivElement>>(new Map());
+  
   const { streamingMessageId } = useChatStore();
   const { 
     retryMessage, 
@@ -99,12 +110,40 @@ export const MessageList: React.FC<MessageListProps> = ({
   };
 
   // Handle copy message content
-  const handleCopyMessage = async (content: string) => {
+  const handleCopyMessage = async (content: string, messageId: string) => {
     try {
       await navigator.clipboard.writeText(content);
-      // Could show success message here
+      setCopiedMessages(prev => new Set(prev).add(messageId));
+      antMessage.success('Message copied to clipboard');
+      
+      // Reset copied state after 2 seconds
+      setTimeout(() => {
+        setCopiedMessages(prev => {
+          const newSet = new Set(prev);
+          newSet.delete(messageId);
+          return newSet;
+        });
+      }, 2000);
     } catch (error) {
       console.error('Failed to copy message:', error);
+      antMessage.error('Failed to copy message');
+    }
+  };
+
+  // Handle message selection from search/thread
+  const handleMessageSelect = (messageId: string) => {
+    const messageElement = messageRefs.current.get(messageId);
+    if (messageElement) {
+      messageElement.scrollIntoView({ 
+        behavior: 'smooth', 
+        block: 'center' 
+      });
+      
+      // Highlight the message briefly
+      messageElement.classList.add('message-highlighted');
+      setTimeout(() => {
+        messageElement.classList.remove('message-highlighted');
+      }, 2000);
     }
   };
 
@@ -268,9 +307,20 @@ export const MessageList: React.FC<MessageListProps> = ({
   const renderMessage = (message: ChatMessage) => {
     const roleConfig = getRoleConfig(message.role);
     const isStreamingMessage = message.id === streamingMessageId;
+    const isCopied = copiedMessages.has(message.id);
 
     return (
-      <div key={message.id} className={`message-wrapper ${roleConfig.align}`}>
+      <div 
+        key={message.id} 
+        className={`message-wrapper ${roleConfig.align}`}
+        ref={(el) => {
+          if (el) {
+            messageRefs.current.set(message.id, el);
+          } else {
+            messageRefs.current.delete(message.id);
+          }
+        }}
+      >
         <Card
           className={`message-card ${roleConfig.cardClass} ${isStreamingMessage ? 'streaming' : ''}`}
           size="small"
@@ -282,13 +332,15 @@ export const MessageList: React.FC<MessageListProps> = ({
             </Space>
 
             <Space size="small">
-              <Button
-                type="text"
-                icon={<CopyOutlined />}
-                size="small"
-                onClick={() => handleCopyMessage(message.content)}
-                title="Copy message"
-              />
+              <Tooltip title={isCopied ? 'Copied!' : 'Copy message'}>
+                <Button
+                  type="text"
+                  icon={isCopied ? <CheckOutlined /> : <CopyOutlined />}
+                  size="small"
+                  onClick={() => handleCopyMessage(message.content, message.id)}
+                  className={isCopied ? 'copied' : ''}
+                />
+              </Tooltip>
             </Space>
           </div>
 
@@ -353,6 +405,32 @@ export const MessageList: React.FC<MessageListProps> = ({
 
   return (
     <div className={`message-list ${className || ''}`}>
+      {/* Message List Controls */}
+      <div className="message-list-controls">
+        <Space size="small">
+          <Tooltip title="Search Messages">
+            <Button
+              type="text"
+              icon={<SearchOutlined />}
+              size="small"
+              onClick={() => setShowSearch(!showSearch)}
+              className={showSearch ? 'active' : ''}
+            />
+          </Tooltip>
+          
+          <Tooltip title="Message Thread">
+            <Button
+              type="text"
+              icon={<BranchesOutlined />}
+              size="small"
+              onClick={() => setShowThread(!showThread)}
+              className={showThread ? 'active' : ''}
+            />
+          </Tooltip>
+        </Space>
+      </div>
+
+      {/* Messages */}
       <List
         dataSource={messages}
         renderItem={renderMessage}
@@ -369,6 +447,20 @@ export const MessageList: React.FC<MessageListProps> = ({
           </Space>
         </div>
       )}
+
+      {/* Message Search */}
+      <MessageSearch
+        visible={showSearch}
+        onClose={() => setShowSearch(false)}
+        onMessageSelect={handleMessageSelect}
+      />
+
+      {/* Message Thread */}
+      <MessageThread
+        visible={showThread}
+        onClose={() => setShowThread(false)}
+        onMessageSelect={handleMessageSelect}
+      />
 
       {/* File Preview Modal */}
       {previewFile && (
