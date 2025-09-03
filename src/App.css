@@ -1,0 +1,55 @@
+.app {
+  min-height: 100vh;
+  background-color: #0f0f0f;
+  color: #ffffff;
+  padding: 2rem;
+  text-align: center;
+}
+
+.app h1 {
+  color: #3b82f6;
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.app p {
+  color: #a3a3a3;
+  font-size: 1.1rem;
+  margin-bottom: 2rem;
+}
+
+/* Custom scrollbar for dark theme */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #1a1a1a;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #404040;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #525252;
+}
+
+/* Global dark theme variables */
+:root {
+  --bg-primary: #0f0f0f;
+  --bg-secondary: #1a1a1a;
+  --bg-tertiary: #262626;
+  --text-primary: #ffffff;
+  --text-secondary: #a3a3a3;
+  --text-tertiary: #737373;
+  --accent-primary: #3b82f6;
+  --accent-success: #10b981;
+  --accent-warning: #f59e0b;
+  --accent-error: #ef4444;
+  --border-primary: #404040;
+  --border-secondary: #262626;
+}
